@@ -1,0 +1,9 @@
+[package]
+name = "sflow"
+version = "0.0.1"
+authors = ["Tarrant Rollins <tarrant@keyneston.com>"]
+
+[dependencies]
+rustc-serialize = "0.3.16"
+byteorder = "0.4.2"
+num = "0.1.30"
