@@ -8,18 +8,18 @@ use datagram::Datagram;
 #[cfg(test)]
 use rustc_serialize::hex::FromHex;
 
-const RAW_TEST_DATA: &'static str = "this data is redacted";
-
-#[test]
-fn test_decode_datagram() {
-
-    let hex_data = RAW_TEST_DATA.clone().from_hex().unwrap();
-    let mut data = Cursor::new(hex_data);
-
-    let d: Datagram = ::utils::Decodeable::read_and_decode(&mut data).unwrap();
-    // TODO: Add more tests here.
-    assert_eq!(d.sample_record.len(), 6);
-}
+// const RAW_TEST_DATA: &'static str = "this data is redacted";
+//
+// #[test]
+// fn test_decode_datagram() {
+//
+// let hex_data = RAW_TEST_DATA.clone().from_hex().unwrap();
+// let mut data = Cursor::new(hex_data);
+//
+// let d: Datagram = ::utils::Decodeable::read_and_decode(&mut data).unwrap();
+// TODO: Add more tests here.
+// assert_eq!(d.sample_record.len(), 6);
+// }
 
 #[test]
 fn test_decode_string() {
