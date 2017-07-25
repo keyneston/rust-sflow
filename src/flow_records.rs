@@ -13,6 +13,7 @@ use std::io::SeekFrom;
 pub enum FlowRecord {
     SampledHeader(SampledHeader), // Format 1
     SampledIpv4(SampledIpv4), // Format 3
+    SampledIpv6(SampledIpv6), // Format 4
     ExtendedSwitch(ExtendedSwitch), // Format 1001
     ExtendedRouter(ExtendedRouter), // Format 1002
     ExtendedGateway(ExtendedGateway), // Format 1003
@@ -34,6 +35,10 @@ impl ::utils::Decodeable for FlowRecord {
             3 => {
                 let e = try!(SampledIpv4::read_and_decode(stream));
                 return Ok(FlowRecord::SampledIpv4(e));
+            }
+            4 => {
+                let e = try!(SampledIpv6::read_and_decode(stream));
+                return Ok(FlowRecord::SampledIpv6(e));
             }
             1001 => {
                 let e = try!(ExtendedSwitch::read_and_decode(stream));
@@ -98,6 +103,22 @@ pub struct ExtendedUrl {
 add_decoder!{
 #[derive(Debug, Clone)]
 pub struct SampledIpv4 {
+   pub length: u32,     /* The length of the IP packet excluding
+                                  lower layer encapsulations */
+   pub protocol: u32,   /* IP Protocol type
+                                   (for example, TCP = 6, UDP = 17) */
+   pub src_ip: ipaddress::IPAddress,            /* Source IP Address */
+   pub dst_ip: ipaddress::IPAddress,            /* Destination IP Address */
+   pub src_port: u32,   /* TCP/UDP source port number or equivalent */
+   pub dst_port: u32,   /* TCP/UDP destination port number or equivalent */
+   pub tcp_flags: u32,  /* TCP flags */
+   pub tos: u32,        /* IP type of service */
+}
+}
+
+add_decoder!{
+#[derive(Debug, Clone)]
+pub struct SampledIpv6 {
    pub length: u32,     /* The length of the IP packet excluding
                                   lower layer encapsulations */
    pub protocol: u32,   /* IP Protocol type
