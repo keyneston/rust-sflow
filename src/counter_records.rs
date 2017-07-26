@@ -9,7 +9,7 @@ use std::io::SeekFrom;
 #[derive(Debug, Clone)]
 pub enum CounterRecord {
     InterfaceCounters(InterfaceCounters),
-    EthernetCounters,
+    EthernetCounters(EthernetCounters),
     Tokenringcounters,
     VGCounters,
     VLANCounters,
@@ -48,6 +48,25 @@ pub struct InterfaceCounters {
 }
 }
 
+add_decoder!{
+#[derive(Debug, Clone, Default)]
+pub struct EthernetCounters {
+   pub dot3_stats_alignment_errors: u32,
+   pub dot3_stats_fcs_errors: u32,
+   pub dot3_stats_single_collision_frames: u32,
+   pub dot3_stats_multiple_collision_frames: u32,
+   pub dot3_stats_sqe_test_errors: u32,
+   pub dot3_stats_deferred_transmissions: u32,
+   pub dot3_stats_late_collisions: u32,
+   pub dot3_stats_excessive_collisions: u32,
+   pub dot3_stats_internal_mac_transmit_errors: u32,
+   pub dot3_stats_carrier_sense_errors: u32,
+   pub dot3_stats_frame_too_longs: u32,
+   pub dot3_stats_internal_mac_receive_errors: u32,
+   pub dot3_stats_symbol_errors: u32,
+}
+}
+
 impl ::utils::Decodeable for CounterRecord {
     fn read_and_decode(stream: &mut ReadSeeker) -> Result<CounterRecord, error::Error> {
         let format = try!(stream.be_read_u32());
@@ -57,6 +76,10 @@ impl ::utils::Decodeable for CounterRecord {
             1 => {
                 let e = try!(InterfaceCounters::read_and_decode(stream));
                 return Ok(CounterRecord::InterfaceCounters(e));
+            }
+            2 => {
+                let e = try!(EthernetCounters::read_and_decode(stream));
+                return Ok(CounterRecord::EthernetCounters(e));
             }
             _ => {
                 println!(
