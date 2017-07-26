@@ -10,6 +10,7 @@ use std::io::SeekFrom;
 #[derive(Debug, Clone)]
 pub enum SampleRecord {
     FlowSample(FlowSample),
+    CounterSample,
     Unknown,
 }
 
@@ -62,6 +63,10 @@ impl ::utils::Decodeable for Vec<SampleRecord> {
                 1 => {
                     let fs: FlowSample = try!(::utils::Decodeable::read_and_decode(stream));
                     results.push(SampleRecord::FlowSample(fs));
+                }
+                2 => {
+                   results.push(SampleRecord::CounterSample);
+                   try!(stream.seek(SeekFrom::Current(length as i64)));
                 }
                 // Skip unknown samples.
                 _ => {
