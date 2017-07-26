@@ -5,6 +5,7 @@ mod utils;
 // Child modules
 mod sample;
 mod types;
+mod counter_records;
 mod flow_records;
 mod error;
 mod ipaddress;

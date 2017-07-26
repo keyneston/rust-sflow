@@ -1,12 +1,19 @@
-use byteorder::{self, ByteOrder, BigEndian, ReadBytesExt};
+use byteorder::{self, BigEndian, ReadBytesExt};
 use error;
 use types;
 
-use std::io::{self, SeekFrom, Read};
+use std::io::{self, SeekFrom};
 use std::mem::size_of;
 use std::vec::Vec;
 
 pub trait ReadBytesLocal: io::Read {
+
+    #[inline]
+    /// be_read_u64 will read 64 bites in *b*ig *e*dian format.
+    fn be_read_u64(&mut self) -> Result<u64, byteorder::Error> {
+        return self.read_u64::<BigEndian>();
+    }
+
     #[inline]
     /// be_read_u32 will read 32 bits in *b*ig *e*dian format.
     fn be_read_u32(&mut self) -> Result<u32, byteorder::Error> {
@@ -71,6 +78,15 @@ impl Decodeable for u8 {
     #[inline]
     fn read_and_decode(stream: &mut types::ReadSeeker) -> Result<Self, error::Error> {
         let r = try!(stream.read_u8());
+
+        Ok(r)
+    }
+}
+
+impl Decodeable for u64 {
+    #[inline]
+    fn read_and_decode(stream: &mut types::ReadSeeker) -> Result<u64, error::Error> {
+        let r = try!(stream.be_read_u64());
 
         Ok(r)
     }
