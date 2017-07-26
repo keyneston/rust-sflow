@@ -1,8 +1,8 @@
-use byteorder::{self, ByteOrder, BigEndian, ReadBytesExt};
+use byteorder::{self, BigEndian, ReadBytesExt};
 use error;
 use types;
 
-use std::io::{self, SeekFrom, Read};
+use std::io::{self, SeekFrom};
 use std::mem::size_of;
 use std::vec::Vec;
 
